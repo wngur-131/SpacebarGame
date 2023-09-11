@@ -51,6 +51,7 @@ def main():
     startTicks = pygame.time.get_ticks()
 
     running = True
+    initScene = True
     while running:
         dt = clock.tick(FPS)
 
@@ -62,34 +63,60 @@ def main():
                 if event.key == pygame.K_SPACE:
                     pass
 
+            # 클릭 이벤트 처리
             if event.type == pygame.MOUSEBUTTONUP:
                 MOUSEPOS = pygame.mouse.get_pos()
 
                 # 종료 버튼 클릭 이벤트 처리
                 if exitButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
-                    pass
+                    running = False
                     
                 # 시작 화면 클릭 이벤트 처리
                 if scene == 1:
                     if startButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
-                        pass
+                        scene = 2
+                        initScene = True
                     else if rankButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
-                        pass
+                        scene = 4
+                        initScene = True
 
                 # 게임 화면 클릭 이벤트 처리
                 else if scene == 2:
                     if undoButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
-                        pass
+                        scene = 1
+                        initScene = True
 
                 # 종료 화면 클릭 이벤트 처리
                 else if scene == 3:
                     if replayButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
-                        pass
+                        scene = 2
+                        initScene = True
+                    else if rankButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
+                        scene = 4
+                        initScene = True
+
+                # 순위 화면 클릭 이벤트 처리
+                else if scene == 4:
+                    if UndoButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
+                        scene = 1
+                        initScene = True
+
+        # 첫 화면 초기화
+        if initScene:
+            if scene == 1:
+                pass
+
+            else if scene == 2:
+                pass
+
+            else if scene == 3:
+                pass
+
+            else:
+                pass
 
         # 그리기
         screen.blit(background.image, (0, 0))
-        screen.blit(startButton.image, (startButton.xPos, startButton.yPos))
-        screen.blit(rankButton.image, (rankButton.xPos, rankButton.yPos))
 
         pygame.display.update()
 
