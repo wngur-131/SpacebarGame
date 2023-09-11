@@ -26,7 +26,7 @@ def main():
     exitButton = Button()
     EXITBUTTON_X_POS = SCREEN_WIDTH - exitButton.width - 48
     EXITBUTTON_Y_POS = 48
-    exitButton.setButtonPositon(EXITBUTTON_X_POS, EXITBUTTON_Y_POS)
+    exitButton.setButtonPosition(EXITBUTTON_X_POS, EXITBUTTON_Y_POS)
     
     startButton = Button()
     STARTBUTTON_X_POS = 360
@@ -40,7 +40,7 @@ def main():
 
     undoButton = Button()
     UNDOBUTTON_X_POS = SCREEN_WIDTH / 2 - undoButton.width / 2
-    UNDOBUTTON_Y_POS = SCREENHEIGHT - 300
+    UNDOBUTTON_Y_POS = SCREEN_HEIGHT - 300
     undoButton.setButtonPosition(UNDOBUTTON_X_POS, UNDOBUTTON_Y_POS)
 
     
@@ -76,44 +76,50 @@ def main():
                     if startButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
                         scene = 2
                         initScene = True
-                    else if rankButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
+                    elif rankButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
                         scene = 4
                         initScene = True
 
                 # 게임 화면 클릭 이벤트 처리
-                else if scene == 2:
+                elif scene == 2:
                     if undoButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
                         scene = 1
                         initScene = True
 
                 # 종료 화면 클릭 이벤트 처리
-                else if scene == 3:
-                    if replayButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
+                elif scene == 3:
+                    if undoButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
                         scene = 2
                         initScene = True
-                    else if rankButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
+                    elif rankButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
                         scene = 4
                         initScene = True
 
                 # 순위 화면 클릭 이벤트 처리
-                else if scene == 4:
-                    if UndoButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
+                elif scene == 4:
+                    if undoButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
                         scene = 1
                         initScene = True
 
-        # 첫 화면 초기화
-        if initScene:
-            if scene == 1:
+        pygame.time.delay(1000)
+        print(scene)
+        # 시작 화면 구성
+        if scene == 1:
+            # 첫 화면 초기화
+            if initScene:
                 pass
 
-            else if scene == 2:
-                pass
+            screen.blit(startButton.image, (startButton.xPos, startButton.yPos))
+            screen.blit(rankButton.image, (rankButton.xPos, rankButton.yPos))
 
-            else if scene == 3:
-                pass
+        elif scene == 2:
+            pass
 
-            else:
-                pass
+        elif scene == 3:
+            pass
+
+        else:
+            pass
 
         # 그리기
         screen.blit(background.image, (0, 0))
