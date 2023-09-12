@@ -101,19 +101,21 @@ def main():
                         scene = 1
                         initScene = True
 
-        pygame.time.delay(1000)
-        print(scene)
         # 시작 화면 구성
         if scene == 1:
             # 첫 화면 초기화
             if initScene:
-                pass
+                initScene = False
 
             screen.blit(startButton.image, (startButton.xPos, startButton.yPos))
             screen.blit(rankButton.image, (rankButton.xPos, rankButton.yPos))
 
         elif scene == 2:
-            pass
+            if initScene:
+                timer = 20
+                
+                
+                initScene = False
 
         elif scene == 3:
             pass
