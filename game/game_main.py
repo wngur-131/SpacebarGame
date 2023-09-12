@@ -14,6 +14,9 @@ def main():
 
     # 화면 타이틀 설정
     pygame.display.set_caption("SpacebarGame")
+    
+    # 데이터베이스 설정
+    db = Database()
 
     # FPS 설정
     FPS = 60
@@ -49,6 +52,10 @@ def main():
 
     # 시작 시간 설정
     startTicks = pygame.time.get_ticks()
+    
+    # 게임 변수 초기화
+    totalTime = 20
+    score = 0
 
     running = True
     initScene = True
@@ -100,6 +107,9 @@ def main():
                     if undoButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
                         scene = 1
                         initScene = True
+                        
+        # 그리기
+        screen.blit(background.image, (0, 0))
 
         # 시작 화면 구성
         if scene == 1:
@@ -110,21 +120,32 @@ def main():
             screen.blit(startButton.image, (startButton.xPos, startButton.yPos))
             screen.blit(rankButton.image, (rankButton.xPos, rankButton.yPos))
 
+        # 게임 화면 구성
         elif scene == 2:
             if initScene:
-                timer = 20
-                
-                
+                score = 0
+                startTicks = pygame.time.get_ticks() # 시작 시간 설정
                 initScene = False
-
+                
+            # 경과 시간 설정
+            elapsedTime = (pygame.time.get_ticks() - startTicks) / 1000
+            
+            if elapsedTime >= 20:
+                scene++
+                initScene = True
+                
+                
+            else:
+                pass
+                
+            
+                
         elif scene == 3:
-            pass
+            if initScene:
+                pass
 
         else:
             pass
-
-        # 그리기
-        screen.blit(background.image, (0, 0))
 
         pygame.display.update()
 
