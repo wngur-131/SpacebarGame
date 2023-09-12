@@ -1,5 +1,9 @@
 import pygame
 
+class Database:
+    def __init__(self):
+        pass
+
 class Button:
     def __init__(self):
         self.image = pygame.image.load("./game/image/button.png")
