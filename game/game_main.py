@@ -17,13 +17,15 @@ def main():
     
     # 데이터베이스 설정
     db = Database()
+    dbError = False
 
     # FPS 설정
     FPS = 60
     clock = pygame.time.Clock()
 
     # 배경화면 설정
-    background = Background()
+    background = Background(False)
+    backgroundText = Background(True)
     
     # 버튼 설정
     exitButton = Button()
@@ -46,7 +48,17 @@ def main():
     UNDOBUTTON_Y_POS = SCREEN_HEIGHT - 300
     undoButton.setButtonPosition(UNDOBUTTON_X_POS, UNDOBUTTON_Y_POS)
 
-    
+    # 컬러 설정
+    WHITE = (255, 255, 255)
+    BLACK = (25, 25, 25)
+    RED = (255, 49, 32)
+
+    # 폰트 설정
+    timerText = Text(36, WHITE)
+    scoreText = Text(96, WHITE)
+
+    resultText = Text(96, WHITE)
+    rankText = Text(36, WHITE)
 
     scene = 1 # 1: 시작, 2: 게임, 3: 게임종료, 4: 순위
 
@@ -62,13 +74,17 @@ def main():
     while running:
         dt = clock.tick(FPS)
 
+        # 이벤트 처리
         for event in pygame.event.get():
+            # pygame 종료
             if event.type == pygame.QUIT:
                 running = False
 
+            # 키보드 이벤트 처리
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE:
-                    pass
+                    if scene == 2:
+                        score += 1
 
             # 클릭 이벤트 처리
             if event.type == pygame.MOUSEBUTTONUP:
@@ -107,9 +123,6 @@ def main():
                     if undoButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
                         scene = 1
                         initScene = True
-                        
-        # 그리기
-        screen.blit(background.image, (0, 0))
 
         # 시작 화면 구성
         if scene == 1:
@@ -117,6 +130,8 @@ def main():
             if initScene:
                 initScene = False
 
+            # 그리기
+            screen.blit(backgroundText.image, (0, 0))
             screen.blit(startButton.image, (startButton.xPos, startButton.yPos))
             screen.blit(rankButton.image, (rankButton.xPos, rankButton.yPos))
 
@@ -126,31 +141,63 @@ def main():
                 score = 0
                 startTicks = pygame.time.get_ticks() # 시작 시간 설정
                 initScene = False
+
+            screen.blit(background.image, (0, 0))
                 
             # 경과 시간 설정
-            elapsedTime = (pygame.time.get_ticks() - startTicks) / 1000
+            leftTime = 20 - (pygame.time.get_ticks() - startTicks) / 1000
             
-            if elapsedTime >= 20:
-                scene++
+            if leftTime <= 0:
+                scene += 1
                 initScene = True
                 
                 
             else:
-                pass
-                
-            
+                screen.blit(undoButton.image, (undoButton.xPos, undoButton.yPos))
+
+                # 텍스트 랜더링
+                timerRender = timerText.font.render(f"남은 시간 : {str(int(leftTime) + 1)}초", None, timerText.color)
+                timerText.width = timerRender.get_rect().size[0]
+                timerText.height = timerRender.get_rect().size[1]
+                timerText.setTextPosition(SCREEN_WIDTH / 2 - timerText.width / 2, undoButton.yPos - 64 - timerText.height)
+                screen.blit(timerRender, (timerText.xPos, timerText.yPos))
+
+                scoreRender = scoreText.font.render(f"점수 : {str(score)}점", None, scoreText.color)
+                scoreText.width = scoreRender.get_rect().size[0]
+                scoreText.height = scoreRender.get_rect().size[1]
+                scoreText.setTextPosition(SCREEN_WIDTH / 2 - scoreText.width / 2, timerText.yPos - 24 - scoreText.height)
+                screen.blit(scoreRender, (scoreText.xPos, scoreText.yPos))
                 
         elif scene == 3:
-            if initScene:
-                pass
+            # 배경 그리기
+            screen.blit(background.image, (0, 0))
 
-        else:
-            pass
+            if initScene:
+                # 모든 데이터 불러오기
+                if db.getData():
+                   dbError = False
+                else:
+                   dbError = True
+
+                if dbError:
+                    pass
+                else:
+                    # 텍스트 랜더링
+                    # rankRender = rankText.font.render(f"전체 {}명 중 {}위를 기록했어요", None, rankText.color)
+
+                    resultRender = resultText.font.render(f"최종 점수 : {score}점", None, resultText.color)
+                    resultText.width = resultRender.get_rect().size[0]
+                    resultText.height = resultRender.get_rect().size[1]
+                    resultText.setTextPosition(SCREEN_WIDTH / 2 - resultText.width / 2, rankButton.yPos - 64 - resultText.height)
+
 
         pygame.display.update()
 
     # pygame 종료
     pygame.quit()
+
+    # 데이터베이스 종료
+    db.db.close()
 
 if __name__ == "__main__":
     main()
