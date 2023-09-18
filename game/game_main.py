@@ -53,13 +53,15 @@ def main():
     BLACK = (25, 25, 25)
     RED = (255, 49, 32)
 
-    # 폰트 설정
+    # 텍스트 설정
     timerText = Text(36, WHITE)
     scoreText = Text(96, WHITE)
 
     resultText = Text(96, WHITE)
     rankText = Text(36, WHITE)
-
+    
+    
+    # 씬 설정
     scene = 1 # 1: 시작, 2: 게임, 3: 게임종료, 4: 순위
 
     # 시작 시간 설정
@@ -141,8 +143,6 @@ def main():
                 score = 0
                 startTicks = pygame.time.get_ticks() # 시작 시간 설정
                 initScene = False
-
-            screen.blit(background.image, (0, 0))
                 
             # 남은 시간 설정
             leftTime = 20 - (pygame.time.get_ticks() - startTicks) / 1000
@@ -153,6 +153,7 @@ def main():
                 
                 
             else:
+                screen.blit(background.image, (0, 0))
                 screen.blit(undoButton.image, (undoButton.xPos, undoButton.yPos))
 
                 # 텍스트 랜더링
@@ -169,8 +170,10 @@ def main():
                 screen.blit(scoreRender, (scoreText.xPos, scoreText.yPos))
                 
         elif scene == 3:
-            # 배경 그리기
+            # 그리기
             screen.blit(background.image, (0, 0))
+            screen.blit(undoButton.image, (undoButton.xPos, undoButton.yPos))
+            screen.blit(rankButton.image, (rankButton.xPos, rankButton.yPos))
 
             if initScene:
                 # 모든 데이터 불러오기
@@ -179,18 +182,29 @@ def main():
                 else:
                    dbError = True
                 
+                initScene = False
+
+            # 텍스트 랜더링
+            if dbError:
+                rankRender = rankText.font.render("데이터베이스 오류로 인해 데이터 수신에 실패했어요", None, rankText.color)
+                rankText.width = rankText.get_rect().size[0]
+                rankText.height = rankText.get_rect().size[1]
+                rankText.setTextPosition(SCREEN_WIDTH / 2 - rankText.width / 2, rankButton.yPos - 64 - rankText.height)
+                screen.blit(rankRender, (rankText.xPos, rankText.yPos))
+                
+            else:
+                rankRender = rankText.font.render(f"전체 {}명 중 {}위를 기록했어요", None, rankText.color)
+                rankText.width = resultText.get_rect().size[0]
+                rankText.height = resultText.ger_rect().size[1]
+                rankText.setTextPosition(SCREEN_WIDTH / 2 - rankText.width / 2, rankButton.yPos - 64 - rankText.height)
+                screen.blit(rankRender, (rankText.xPos, rankText.yPos))
+
             resultRender = resultText.font.render(f"최종 점수 : {score}점", None, resultText.color)
             resultText.width = resultRender.get_rect().size[0]
             resultText.height = resultRender.get_rect().size[1]
-            resultText.setTextPosition(SCREEN_WIDTH / 2 - resultText.width / 2, rankButton.yPos - 64 - resultText.height)
-
-            if dbError:
-                pass
-            else:
-                # 텍스트 랜더링
-                # rankRender = rankText.font.render(f"전체 {}명 중 {}위를 기록했어요", None, rankText.color)
-
-
+            resultText.setTextPosition(SCREEN_WIDTH / 2 - resultText.width / 2, rankButton.yPos - 24 - resultText.height)
+            screen.blit(resultRender, (resultText.xPos, resultText.yPos))
+            
         pygame.display.update()
 
     # pygame 종료
