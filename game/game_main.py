@@ -144,7 +144,7 @@ def main():
 
             screen.blit(background.image, (0, 0))
                 
-            # 경과 시간 설정
+            # 남은 시간 설정
             leftTime = 20 - (pygame.time.get_ticks() - startTicks) / 1000
             
             if leftTime <= 0:
@@ -178,17 +178,17 @@ def main():
                    dbError = False
                 else:
                    dbError = True
+                
+            resultRender = resultText.font.render(f"최종 점수 : {score}점", None, resultText.color)
+            resultText.width = resultRender.get_rect().size[0]
+            resultText.height = resultRender.get_rect().size[1]
+            resultText.setTextPosition(SCREEN_WIDTH / 2 - resultText.width / 2, rankButton.yPos - 64 - resultText.height)
 
-                if dbError:
-                    pass
-                else:
-                    # 텍스트 랜더링
-                    # rankRender = rankText.font.render(f"전체 {}명 중 {}위를 기록했어요", None, rankText.color)
-
-                    resultRender = resultText.font.render(f"최종 점수 : {score}점", None, resultText.color)
-                    resultText.width = resultRender.get_rect().size[0]
-                    resultText.height = resultRender.get_rect().size[1]
-                    resultText.setTextPosition(SCREEN_WIDTH / 2 - resultText.width / 2, rankButton.yPos - 64 - resultText.height)
+            if dbError:
+                pass
+            else:
+                # 텍스트 랜더링
+                # rankRender = rankText.font.render(f"전체 {}명 중 {}위를 기록했어요", None, rankText.color)
 
 
         pygame.display.update()
