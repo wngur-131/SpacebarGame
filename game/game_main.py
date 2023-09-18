@@ -176,11 +176,17 @@ def main():
             screen.blit(rankButton.image, (rankButton.xPos, rankButton.yPos))
 
             if initScene:
+                # 데이터 삽입
+                db.insertData(score)
+                
                 # 모든 데이터 불러오기
                 if db.getData():
-                   dbError = False
+                    dbError = False
                 else:
-                   dbError = True
+                    dbError = True
+                
+                    total = len(db.data)
+                    rank = rankScore(score)
                 
                 initScene = False
 
@@ -193,7 +199,7 @@ def main():
                 screen.blit(rankRender, (rankText.xPos, rankText.yPos))
                 
             else:
-                rankRender = rankText.font.render(f"전체 {}명 중 {}위를 기록했어요", None, rankText.color)
+                rankRender = rankText.font.render(f"전체 {total}명 중 {rank}위를 기록했어요", None, rankText.color)
                 rankText.width = resultText.get_rect().size[0]
                 rankText.height = resultText.ger_rect().size[1]
                 rankText.setTextPosition(SCREEN_WIDTH / 2 - rankText.width / 2, rankButton.yPos - 64 - rankText.height)
