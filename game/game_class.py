@@ -48,6 +48,15 @@ class Database:
             return False
         else:
             return True     
+            
+    def rankScore(self, score):
+        rank = 1
+        for s in self.data[2]:
+            if score <= s:
+                rank += 1
+                
+        return rank
+
 
 class Button:
     def __init__(self):
