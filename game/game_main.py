@@ -18,6 +18,9 @@ def main():
     # 데이터베이스 설정
     db = Database()
     dbError = False
+    
+    total = 0
+    rank = 0
 
     # FPS 설정
     FPS = 60
@@ -210,7 +213,10 @@ def main():
             resultText.height = resultRender.get_rect().size[1]
             resultText.setTextPosition(SCREEN_WIDTH / 2 - resultText.width / 2, rankButton.yPos - 24 - resultText.height)
             screen.blit(resultRender, (resultText.xPos, resultText.yPos))
-            
+        
+        else:
+            pass
+        
         pygame.display.update()
 
     # pygame 종료
