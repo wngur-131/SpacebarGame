@@ -224,9 +224,11 @@ def main(info):
                 if db.getData():
                     rankTotal = len(db.data)
                     
-                    rankData = []
+                    rankIndex = []
                     for data in db.data:
-                        pass
+                        rankIndex.insert(db.rankScore(data[3]) - 1, data)
+
+                    print(rankIndex)
 
 
         
@@ -235,7 +237,7 @@ def main(info):
     # pygame 종료
     pygame.quit()
 
-    # 데이터베이스 종료
+    # 데이터베이스 종료2
     db.db.close()
 
 if __name__ == "__main__":
