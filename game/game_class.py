@@ -55,8 +55,8 @@ class Database:
             
     def rankScore(self, score):
         rank = 1
-        for s in self.data:
-            if score < int(s[3]):
+        for data in self.data:
+            if score < int(data[3]):
                 rank += 1
                 
         return rank

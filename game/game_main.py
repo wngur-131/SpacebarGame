@@ -65,7 +65,6 @@ def main(info):
     resultText = Text(96, WHITE)
     rankText = Text(36, WHITE)
     
-    
     # 씬 설정
     scene = 1 # 1: 시작, 2: 게임, 3: 게임종료, 4: 순위
 
@@ -215,21 +214,39 @@ def main(info):
             resultText.setTextPosition(SCREEN_WIDTH / 2 - resultText.width / 2, rankText.yPos - 24 - resultText.height)
             screen.blit(resultRender, (resultText.xPos, resultText.yPos))
         
-        else:
+        elif scene == 4:
             # 그리기
             screen.blit(background.image , (0, 0))
             screen.blit(undoButton.image, (undoButton.xPos, undoButton.yPos))
 
+            rankIndex = [] # 정렬 후 데이터
+
             if initScene:
                 if db.getData():
-                    rankTotal = len(db.data)
-                    
-                    rankIndex = []
                     for data in db.data:
-                        rankIndex.insert(db.rankScore(data[3]) - 1, data)
+                        rankTotal = 0
+                        for r in rankIndex:
+                            if data[3] < r[3]:
+                                rankTotal += 1
 
-                    print(rankIndex)
+                        rankIndex.insert(rankTotal, data)
 
+                        dbError = False
+
+                else:
+                    dbError = True
+
+                initScene = False
+
+            if dbError:
+                errorRender = resultText.font.render("데이터베이스 오류로 인해 순위를 확인할 수 없어요", None, rankText.color)
+                resultText.width = errorRender.get_rect().size[0]
+                resultText.height = errorRender.get_rect().size[1]
+                resultText.setTextPosition(SCREEN_WIDTH / 2 - resultText.width, undoButton.yPos - 64 - resultText.height)
+                screen.blit(errorRender, (resultText.xPos, resultText.yPos))
+
+            else:
+                pass
 
         
         pygame.display.update()
