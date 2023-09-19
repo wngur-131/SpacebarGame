@@ -19,26 +19,24 @@ class Database:
                     id int(10) AUTO_INCREMENT PRIMARY KEY,
                     class varchar(5),
                     name varchar(10),
-                    score int(10) DEFAULT 0,
-                    date varchar(14)
+                    score int(10) DEFAULT 0
                     )"""
             )
             self.db.commit()
 
         except:
-            return False
-        
-        else:
-            return True
+            pass
         
     def insertData(self, data):
-        self.cursor.execute(
-            f"""INSERT INTO spacebargame_info (
-                (class, name, score, date) VALUES {data}
-                )
+        try:
+            SQL = "INSERT INTO spacebargame_info (class, name, score) VALUES (%s, %s, %s)"
+            self.cursor.execute(SQL, data)
+            self.db.commit()
+        except:
+             return False
+        else:
+            return True
 
-        """)
-        self.db.commit()
 
     def getData(self):
         try:
@@ -48,11 +46,17 @@ class Database:
             return False
         else:
             return True     
+        
+    def deleteTable(self):
+        try:
+            self.cursor.execute("DELETE TABLE spacebargame_info")
+        except:
+            pass
             
     def rankScore(self, score):
         rank = 1
-        for s in self.data[2]:
-            if score <= s:
+        for s in self.data:
+            if score < int(s[3]):
                 rank += 1
                 
         return rank

@@ -2,7 +2,7 @@ import pygame
 from game_class import *
 
 # pygame 실행
-def main():
+def main(info):
 
     # pygame 초기화
     pygame.init()
@@ -17,10 +17,12 @@ def main():
     
     # 데이터베이스 설정
     db = Database()
-    dbError = False
+    db.createTable()
     
-    total = 0
-    rank = 0
+    dbError = True
+    
+    dbTotal = 0
+    dbRank = 0
 
     # FPS 설정
     FPS = 60
@@ -71,7 +73,7 @@ def main():
     startTicks = pygame.time.get_ticks()
     
     # 게임 변수 초기화
-    totalTime = 20
+    TOTAL_TIME = 20
     score = 0
 
     running = True
@@ -116,7 +118,7 @@ def main():
 
                 # 종료 화면 클릭 이벤트 처리
                 elif scene == 3:
-                    if undoButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
+                    if startButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
                         scene = 2
                         initScene = True
                     elif rankButton.ifClickButton(MOUSEPOS[0], MOUSEPOS[1]):
@@ -148,7 +150,7 @@ def main():
                 initScene = False
                 
             # 남은 시간 설정
-            leftTime = 20 - (pygame.time.get_ticks() - startTicks) / 1000
+            leftTime = TOTAL_TIME - (pygame.time.get_ticks() - startTicks) / 1000
             
             if leftTime <= 0:
                 scene += 1
@@ -175,47 +177,58 @@ def main():
         elif scene == 3:
             # 그리기
             screen.blit(background.image, (0, 0))
-            screen.blit(undoButton.image, (undoButton.xPos, undoButton.yPos))
+            screen.blit(startButton.image, (startButton.xPos, startButton.yPos))
             screen.blit(rankButton.image, (rankButton.xPos, rankButton.yPos))
 
             if initScene:
-                # 데이터 삽입
-                db.insertData(score)
-                
-                # 모든 데이터 불러오기
-                if db.getData():
+                # 데이터 삽입, 불러오기
+                if db.insertData((info[0], info[1], score)) and db.getData():
                     dbError = False
+
+                    dbTotal = len(db.data)
+                    dbRank = db.rankScore(score)
+
+                # 데이터베이스 오류
                 else:
                     dbError = True
-                
-                    total = len(db.data)
-                    rank = rankScore(score)
                 
                 initScene = False
 
             # 텍스트 랜더링
             if dbError:
                 rankRender = rankText.font.render("데이터베이스 오류로 인해 데이터 수신에 실패했어요", None, rankText.color)
-                rankText.width = rankText.get_rect().size[0]
-                rankText.height = rankText.get_rect().size[1]
+                rankText.width = rankRender.get_rect().size[0]
+                rankText.height = rankRender.get_rect().size[1]
                 rankText.setTextPosition(SCREEN_WIDTH / 2 - rankText.width / 2, rankButton.yPos - 64 - rankText.height)
                 screen.blit(rankRender, (rankText.xPos, rankText.yPos))
                 
             else:
-                rankRender = rankText.font.render(f"전체 {total}명 중 {rank}위를 기록했어요", None, rankText.color)
-                rankText.width = resultText.get_rect().size[0]
-                rankText.height = resultText.ger_rect().size[1]
+                rankRender = rankText.font.render(f"전체 {dbTotal}명 중 {dbRank}위를 기록했어요", None, rankText.color)
+                rankText.width = rankRender.get_rect().size[0]
+                rankText.height = rankRender.get_rect().size[1]
                 rankText.setTextPosition(SCREEN_WIDTH / 2 - rankText.width / 2, rankButton.yPos - 64 - rankText.height)
                 screen.blit(rankRender, (rankText.xPos, rankText.yPos))
 
             resultRender = resultText.font.render(f"최종 점수 : {score}점", None, resultText.color)
             resultText.width = resultRender.get_rect().size[0]
             resultText.height = resultRender.get_rect().size[1]
-            resultText.setTextPosition(SCREEN_WIDTH / 2 - resultText.width / 2, rankButton.yPos - 24 - resultText.height)
+            resultText.setTextPosition(SCREEN_WIDTH / 2 - resultText.width / 2, rankText.yPos - 24 - resultText.height)
             screen.blit(resultRender, (resultText.xPos, resultText.yPos))
         
         else:
-            pass
+            # 그리기
+            screen.blit(background.image , (0, 0))
+            screen.blit(undoButton.image, (undoButton.xPos, undoButton.yPos))
+
+            if initScene:
+                if db.getData():
+                    rankTotal = len(db.data)
+                    
+                    rankData = []
+                    for data in db.data:
+                        pass
+
+
         
         pygame.display.update()
 
@@ -226,4 +239,4 @@ def main():
     db.db.close()
 
 if __name__ == "__main__":
-    main()
+    main(("10309", "문주혁"))
