@@ -65,6 +65,8 @@ def main(info):
     resultText = Text(96, WHITE)
     rankText = Text(36, WHITE)
     
+    tableText = Text(36, WHITE)
+    
     # 씬 설정
     scene = 1 # 1: 시작, 2: 게임, 3: 게임종료, 4: 순위
 
@@ -229,7 +231,7 @@ def main(info):
                             if data[3] < r[3]:
                                 rankTotal += 1
 
-                        rankIndex.insert(rankTotal, data)
+                        rankIndex.insert(rankTotal - 1, data)
 
                         dbError = False
 
@@ -246,7 +248,17 @@ def main(info):
                 screen.blit(errorRender, (resultText.xPos, resultText.yPos))
 
             else:
-                pass
+                if len(rankIndex) > 10: # 1부터 0까지 반복
+                    for i in reversed(range(0, 11)):
+                        if i == 0:
+                            rankRender = tableText.font.render("순위", None, tableText.color)
+                            tableText.width = rankRender.get_rect().size[0]
+                            tableText.height = rankRender.get_rect().size[1]
+                            tableText.setTextPosition()
+                        rankRender = tableText.font.render()
+                else:
+                    for i in reversed(range(len(rankIndex) + 1, 0)): # 리스트 길이 + 1만큼 반복
+                        pass
 
         
         pygame.display.update()
