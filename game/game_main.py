@@ -221,17 +221,29 @@ def main(info):
             screen.blit(background.image , (0, 0))
             screen.blit(undoButton.image, (undoButton.xPos, undoButton.yPos))
 
-            rankIndex = [] # 정렬 후 데이터
+            index = [] # 정렬 후 데이터
+
+            rankIndexText = [] 
+            rankRender = []
+
+            classIndexText = []
+            classRender = []
+
+            nameIndexText = []
+            nameRender = []
+
+            scoreIndexText = []
+            scoreRender = []
 
             if initScene:
                 if db.getData():
                     for data in db.data:
-                        rankTotal = 0
-                        for r in rankIndex:
-                            if data[3] < r[3]:
+                        rankTotal = 1
+                        for r in index:
+                            if data[3] <= r[3]:
                                 rankTotal += 1
 
-                        rankIndex.insert(rankTotal - 1, data)
+                        index.insert(rankTotal - 1, data)
 
                         dbError = False
 
@@ -248,18 +260,42 @@ def main(info):
                 screen.blit(errorRender, (resultText.xPos, resultText.yPos))
 
             else:
-                if len(rankIndex) > 10: # 1부터 0까지 반복
+                if len(index) > 10: # 10부터 0까지 반복
                     for i in reversed(range(0, 11)):
                         if i == 0:
-                            rankRender = tableText.font.render("순위", None, tableText.color)
-                            tableText.width = rankRender.get_rect().size[0]
-                            tableText.height = rankRender.get_rect().size[1]
-                            tableText.setTextPosition()
-                        rankRender = tableText.font.render()
-                else:
-                    for i in reversed(range(len(rankIndex) + 1, 0)): # 리스트 길이 + 1만큼 반복
-                        pass
+                            rankRender.append(Text)
+                            tableText.width = rankRender[10 - i].get_rect().size[0]
+                            tableText.height = rankRender[10 - i].get_rect().size[1]
+                            tableText.setTextPosition(360, undoButton.yPos - 10 * (24 + tableText.height))
+                            screen.blit(rankRender[10 - i], (tableText.xPos, tableText.yPos))
+                        else:
+                            rankRender.append(tableText.font.render(rankIndex[i][3], None, tableText.color))
+                            tableText.width = rankRender[10 - i].get_rect().size[1]
+                            tableText.height = rankRender[10 - i].get_rect().size[1]
+                            if i == 10:
+                                tableText.setTextPosition(360, undoButton.yPos - 64 - tableText.height)
+                            else:
+                                tableText.setTextPositon(360, undoButton.yPos - 64 - (10 - i) * (24 + tableText.height))
+                            screen.blit(rankRender[10 - i], (tableText.xPos, tableText.yPos))
 
+                else:
+                    for i in reversed(range(0, len(rankIndexText) + 1)): # 리스트 길이 + 1만큼 반복
+                        if i == 0:
+                            rankRender.append(tableText.font.render("순위", None, tableText.color))
+                            tableText.width = rankRender[len(rankIndexText) - i].get_rect().size[0]
+                            tableText.height = rankRender[len(rankIndexText) - i].get_rect().size[1]
+                            tableText.setTextPosition(360, undoButton.yPos - (len(rankIndexText) - i) * (24 - tableText.height))
+                            screen.blit(rankRender[len(rankIndexText) - i], (tableText.xPos, tableText.yPos))
+                        else:
+                            rankIndexText.append(Text(36, WHITE))
+                            rankRender.append(rankIndexText[i].font.render(str(rankIndexText[i][i - 1][3]), None, tableText.color))
+                            rankIndexText[i].width = rankRender[len(index) - i].get_rect().size[1]
+                            tableText.height = rankRender[len(index) - i].get_rect().size[1]
+                            if i == 10:
+                                rankIndexText[i].setTextPosition(360, undoButton.yPos - 64 - rankIndexText.height)
+                            else:
+                                rankIndexText[i].setTextPosition(360, undoButton.yPos - 64 - (len(index) - i) * (24 + tableText.height))
+                            screen.blit(rankRender[len(index) - i], (rankIndexText[i].xPos, rankIndexText[i].yPos))
         
         pygame.display.update()
 

@@ -1,11 +1,3 @@
-printData = []
+a = [(0, 1), (1, 3)]
 
-for i in printData:
-    print(i)
-
-print(printData)
-
-# for i in reversed(range(1, 10)):
-#     printData[i] = i
-
-# print(printData)
+print(a[0][0])
